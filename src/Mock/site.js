@@ -31,29 +31,22 @@ export default [
                         title: 'QQ',
                         icon: 'iconqq',
                         color: '#1AB6FF ',
-                        href: 'http://wpa.qq.com/msgrd?v=3&uin=1224971566&site=qq&menu=yes'
+                        href: 'http://wpa.qq.com/msgrd?v=3&uin=641421366&site=qq&menu=yes'
                     },
                     {
                         id: 2,
                         title: 'Gitee',
                         icon: 'icongitee',
                         color: '#d81e06',
-                        href: 'https://gitee.com/fengziy'
+                        href: '#'
                     },
                     {
                         id: 3,
                         title: 'GitHub',
                         icon: 'icongithub',
                         color: '',
-                        href: 'https://github.com/fengziye'
+                        href: '#'
                     },
-                    {
-                        id: 4,
-                        title: 'CSDN',
-                        icon: 'iconcsdn',
-                        color: 'red',
-                        href: 'https://blog.csdn.net/feng_zi_ye'
-                    }
                 ]
             }
         }
