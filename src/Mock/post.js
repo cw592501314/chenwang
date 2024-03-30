@@ -1,5 +1,4 @@
 import axios from "axios";
-
 const Mock = require('mockjs');
 const count = 100
 
@@ -13,7 +12,7 @@ const banners = [
     'https://s1.ax1x.com/2020/05/14/YDhoVg.jpg',
     'https://s1.ax1x.com/2020/05/14/YD4FR1.jpg'
 ]
-let List = [{
+const List = [{
     id: 0,
     isTop: true,
     banner: banners[0],
@@ -25,27 +24,27 @@ let List = [{
     viewsCount: 4045,
     commentsCount: 99
 }]
-
-function getData() {
-    try {
-        const res = axios.get('http://blog-api.com/articles/list')
-            .then(function (response) {
-                List = res.data;
-                // 在这里处理响应数据
-                console.log(response.data); // 访问实际的数据
-            })
-    } catch (err) {
-        // 可能需要添加一个事件处理器或其他逻辑来处理错误
-        console.error('Error fetching data:', err);
-    }
+for (let i = 0; i < count; i++) {
+    List.push(Mock.mock({
+        id: '@increment',
+        'isTop|1-4': true,
+        'banner|+1': banners,
+        'isHot|1-3': true,
+        pubTime: +Mock.Random.date('T'),
+        title: Mock.Random.ctitle(10,20),
+        summary: Mock.Random.cparagraph(),
+        content: baseContent,
+        viewsCount: '@integer(300, 5000)',
+        commentsCount: '@integer(10, 200)'
+    }))
 }
 
 export default [
     {
         url: '/post/list',
         type: 'get',
-        response: async config => {
-            await getData();
+        response: config => {
+
             let {page = 1, size = 10} = config.query;
             page = page instanceof Number ? page : parseInt(page)
             size = size instanceof Number ? size : parseInt(size)
@@ -53,13 +52,30 @@ export default [
             return {
                 code: 20000,
                 data: {
-                    total: List.length,
-                    items: pageList.sort((a, b) => a.isTop === b.isTop ? 0 : a.isTop ? -1 : 1),
+                    total:List.length,
+                    items:pageList.sort((a,b)=>a.isTop===b.isTop?0:a.isTop?-1:1),
                     hasNextPage: page * size < List.length,
                     page: page,
                     size: size
                 }
             }
         },
+        methods:{
+            getData(format) {
+                axios.get(this.url, {
+                    params: this.params
+                }).then(res => {
+                    this.data = res.data
+                    this.loading = false
+                    this.$emit('on-load', res.data)
+                    if (format) {
+                        this.formatData(res.data)
+                    }
+                }).catch(err => {
+                    this.loading = false
+                    this.$emit('on-error', err)
+                })
+            }
+        }
     }
 ]
